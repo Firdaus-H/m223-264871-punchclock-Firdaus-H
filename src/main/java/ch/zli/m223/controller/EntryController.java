@@ -6,7 +6,10 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.PATCH;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 
@@ -38,4 +41,25 @@ public class EntryController {
        return entryService.createEntry(entry);
     }
 
+    @DELETE
+    @Path("/delete/{id}")
+    @Operation(summary = "Deletes an entry.", description = "Deletes an entry by its ID.")
+    public void delete(@PathParam("id") Long id) {
+        entryService.deleteEntry(id);
+    }
+
+    @PATCH
+    @Path("/update/{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Operation(summary = "Updates an entry.", description = "Updates an entry by its ID.")
+    public Entry update(@PathParam("id") Long id, Entry entry) {
+        Entry existingEntry = entryService.findById(id);
+        if (existingEntry != null) {
+            existingEntry.setCheckIn(entry.getCheckIn());
+            existingEntry.setCheckOut(entry.getCheckOut());
+            return entryService.updateEntry(existingEntry);
+        } else {
+            throw new RuntimeException("Entry with ID " + id + " not found.");
+        }
+    }
 }
