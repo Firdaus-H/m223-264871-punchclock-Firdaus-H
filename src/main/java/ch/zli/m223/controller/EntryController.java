@@ -5,6 +5,7 @@ import java.util.List;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.PATCH;
@@ -55,11 +56,15 @@ public class EntryController {
     public Entry update(@PathParam("id") Long id, Entry entry) {
         Entry existingEntry = entryService.findById(id);
         if (existingEntry != null) {
-            existingEntry.setCheckIn(entry.getCheckIn());
-            existingEntry.setCheckOut(entry.getCheckOut());
+            if (entry.getCheckIn() != null) {
+                existingEntry.setCheckIn(entry.getCheckIn());
+            }
+            if (entry.getCheckOut() != null) {
+                existingEntry.setCheckOut(entry.getCheckOut());
+            }
             return entryService.updateEntry(existingEntry);
         } else {
-            throw new RuntimeException("Entry with ID " + id + " not found.");
+            throw new NotFoundException("Entry with ID " + id + " not found.");
         }
     }
 }
