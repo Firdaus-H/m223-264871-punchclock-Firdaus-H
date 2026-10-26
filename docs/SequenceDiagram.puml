@@ -1,0 +1,40 @@
+@startuml SequenceDiagram
+
+title Sequence Diagram - Create Time Entry
+
+actor User
+participant Browser
+participant EntryController
+participant EntryService
+participant EntryRepository
+database Database
+
+User -> Browser : Enter time entry and click Save
+
+Browser -> EntryController : HTTP POST /entries
+activate EntryController
+
+EntryController -> EntryService : createEntry(entry)
+activate EntryService
+
+EntryService -> EntryRepository : persist(entry)
+activate EntryRepository
+
+EntryRepository -> Database : INSERT INTO entry
+activate Database
+
+Database --> EntryRepository : Entry saved
+deactivate Database
+
+EntryRepository --> EntryService : Success
+deactivate EntryRepository
+
+EntryService --> EntryController : Saved entry
+deactivate EntryService
+
+EntryController --> Browser : HTTP 201 Created
+deactivate EntryController
+
+Browser --> User : Display confirmation
+
+@enduml

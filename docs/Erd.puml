@@ -1,0 +1,12 @@
+@startuml EntityRelationshipDiagram
+
+title Punchclock - Entity Relationship Diagram
+
+class Entry {
+    + id : Long
+    --
+    - checkIn : LocalDateTime
+    - checkOut : LocalDateTime
+}
+
+@enduml

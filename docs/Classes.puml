@@ -1,0 +1,32 @@
+@startuml ClassDiagram
+
+class EntryController {
+    +index()
+    +create()
+}
+
+class EntryService {
+    +createEntry()
+    +findAll()
+}
+
+class EntryRepository {
+    +listAll()
+    +findById(id)
+    +persist(entry)
+    +deleteById(id)
+}
+
+class Entry {
+    -id : Long
+    -checkIn : LocalDateTime
+    -checkOut : LocalDateTime
+}
+
+EntryController --> EntryService
+EntryService --> EntryRepository
+EntryService --> Entry
+EntryController --> Entry
+EntryRepository --> Entry
+
+@enduml
