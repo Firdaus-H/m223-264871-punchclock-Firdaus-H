@@ -7,6 +7,28 @@ class Entry {
     --
     - checkIn : LocalDateTime
     - checkOut : LocalDateTime
+    - categoryId : Long
 }
+
+class Category {
+    + id : Long
+    --
+    - title : String
+}
+
+class Tag {
+    + id : Long
+    --
+    - title : String
+}
+
+class EntryTag {
+    + entryId : Long
+    + tagId : Long
+}
+
+Category "1" -- "0..*" Entry : has
+Entry "1" -- "0..*" EntryTag
+Tag "1" -- "0..*" EntryTag
 
 @enduml

@@ -1,6 +1,7 @@
 package ch.zli.m223.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
@@ -20,6 +21,9 @@ public class EntryDto {
 
     @NotNull(message = "Check-out time must not be null")
     private LocalDateTime checkOut;
+
+    private Long categoryId;
+    private List<Long> tagIds;
 
     public Long getId() {
         return id;
@@ -54,5 +58,21 @@ public class EntryDto {
         }
 
         return true;
+    }
+
+    public Long getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public List<Long> getTagIds() {
+        return tagIds;
+    }
+
+    public void setTagIds(List<Long> tagIds) {
+        this.tagIds = tagIds;
     }
 }
