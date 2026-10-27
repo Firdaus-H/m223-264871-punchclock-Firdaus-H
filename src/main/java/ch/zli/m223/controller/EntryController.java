@@ -54,7 +54,7 @@ public class EntryController {
     @Operation(summary = "Creates a new entry.", description = "Creates a new entry and returns the newly added entry.")
     public EntryDto create(@NotNull @Valid EntryDto dto) {
         Entry entry = entryMapper.toEntity(dto);
-        Entry createdEntry = entryService.createEntry(entry);
+        Entry createdEntry = entryService.createEntry(entry, dto);
         return entryMapper.toDto(createdEntry);
     }
 
@@ -70,7 +70,7 @@ public class EntryController {
     @Operation(summary = "Updates an entry.", description = "Updates an entry by its ID.")
     public EntryDto update(@PathParam("id") Long id, @NotNull @Valid EntryDto dto) {
         Entry entry = entryMapper.toEntity(dto);
-        Entry updatedEntry = entryService.updateEntry(id, entry);
+        Entry updatedEntry = entryService.updateEntry(id, entry, dto);
         if (updatedEntry == null) {
             throw new NotFoundException("Entry with ID " + id + " not found.");
         }
