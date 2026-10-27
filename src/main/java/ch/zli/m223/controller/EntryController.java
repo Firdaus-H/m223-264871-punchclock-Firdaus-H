@@ -59,14 +59,14 @@ public class EntryController {
     }
 
     @DELETE
-    @Path("/delete/{id}")
+    @Path("/{id}")
     @Operation(summary = "Deletes an entry.", description = "Deletes an entry by its ID.")
     public void delete(@PathParam("id") Long id) {
         entryService.deleteEntry(id);
     }
 
     @PUT
-    @Path("/update/{id}")
+    @Path("/{id}")
     @Operation(summary = "Updates an entry.", description = "Updates an entry by its ID.")
     public EntryDto update(@PathParam("id") Long id, @NotNull @Valid EntryDto dto) {
         Entry entry = entryMapper.toEntity(dto);

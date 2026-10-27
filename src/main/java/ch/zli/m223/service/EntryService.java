@@ -7,6 +7,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.NotFoundException;
 import ch.zli.m223.model.Entry;
 import ch.zli.m223.repository.EntryRepository;
 
@@ -28,9 +29,10 @@ public class EntryService {
     @Transactional
     public void deleteEntry(Long id) {
         Entry entry = entryRepository.findById(id);
-        if (entry != null) {
-            entryRepository.delete(entry);
+        if (entry == null) {
+            throw new NotFoundException("Entry with ID " + id + " not found.");
         }
+        entryRepository.delete(entry);
     }
 
     public Entry findById(Long id) {
