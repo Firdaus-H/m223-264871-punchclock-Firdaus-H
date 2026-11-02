@@ -2,11 +2,20 @@
 
 title Punchclock - Entity Relationship Diagram
 
+class ApplicationUser {
+    + id : Long
+    --
+    - username : String
+    - passwordHash : String
+    - role : String
+}
+
 class Entry {
     + id : Long
     --
     - checkIn : LocalDateTime
     - checkOut : LocalDateTime
+    - userId : Long
     - categoryId : Long
 }
 
@@ -27,7 +36,8 @@ class EntryTag {
     + tagId : Long
 }
 
-Category "1" -- "0..*" Entry : has
+ApplicationUser "1" -- "0..*" Entry : owns
+Category "1" -- "0..*" Entry : categorizes
 Entry "1" -- "0..*" EntryTag
 Tag "1" -- "0..*" EntryTag
 

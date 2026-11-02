@@ -1,0 +1,41 @@
+@startuml AuthenticatedRequest
+
+title Punchclock - Create Entry with JWT Authentication
+
+actor User
+participant Browser
+participant JWTAuthentication
+participant EntryController
+participant EntryService
+participant EntryRepository
+database Database
+
+User -> Browser : Create new time entry
+
+Browser -> JWTAuthentication : POST /entries\nAuthorization: Bearer JWT\nEntryDto
+
+JWTAuthentication -> JWTAuthentication : Verify JWT signature
+JWTAuthentication -> JWTAuthentication : Check expiration and claims
+
+alt JWT valid
+    JWTAuthentication -> EntryController : Forward authenticated request
+
+    EntryController -> EntryService : createEntry(entry)
+
+    EntryService -> EntryRepository : persist(entry)
+
+    EntryRepository -> Database : INSERT Entry
+    Database --> EntryRepository : Saved Entry
+
+    EntryRepository --> EntryService : Saved Entry
+    EntryService --> EntryController : Created Entry
+
+    EntryController --> Browser : 201 Created + EntryDto
+    Browser --> User : Display saved Entry
+
+else JWT missing, invalid or expired
+    JWTAuthentication --> Browser : 401 Unauthorized
+    Browser --> User : Redirect to login
+end
+
+@enduml

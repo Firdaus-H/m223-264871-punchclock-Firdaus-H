@@ -1,0 +1,41 @@
+@startuml Login
+
+title Punchclock - Login (JWT Authentication)
+
+actor User
+participant Browser
+participant AuthController
+participant AuthService
+participant ApplicationUserRepository
+database Database
+
+User -> Browser : Enter username and password
+
+Browser -> AuthController : POST /auth/login\n(username, password)
+
+AuthController -> AuthService : login(username, password)
+
+AuthService -> ApplicationUserRepository : findByUsername(username)
+
+ApplicationUserRepository -> Database : SELECT user WHERE username = ?
+Database --> ApplicationUserRepository : ApplicationUser / null
+
+ApplicationUserRepository --> AuthService : ApplicationUser / null
+
+alt User exists and password is correct
+    AuthService -> AuthService : Verify password hash
+    AuthService -> AuthService : Generate signed JWT
+
+    AuthService --> AuthController : JWT
+    AuthController --> Browser : 200 OK + JWT
+
+    Browser -> Browser : Store JWT
+    Browser --> User : Login successful
+else Invalid credentials
+    AuthService --> AuthController : Authentication failed
+    AuthController --> Browser : 401 Unauthorized
+
+    Browser --> User : Display error message
+end
+
+@enduml

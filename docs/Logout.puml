@@ -1,0 +1,17 @@
+@startuml Logout
+
+title Punchclock - Logout (JWT Authentication)
+
+actor User
+participant Browser
+participant AuthController
+participant AuthService
+database Database
+
+User -> Browser : Click Logout
+
+Browser -> Browser : Delete stored JWT
+
+Browser --> User : Redirect to login page
+
+@enduml
