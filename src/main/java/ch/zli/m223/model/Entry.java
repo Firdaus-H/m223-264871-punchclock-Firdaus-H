@@ -10,6 +10,7 @@ import java.util.List;
 
 @Entity
 public class Entry {
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Schema(readOnly = true)
@@ -25,12 +26,8 @@ public class Entry {
   @JoinColumn(name = "category_id")
   private Category category;
 
-  @ManyToMany 
-  @JoinTable (
-    name = "entry_tag",
-    joinColumns = @JoinColumn(name = "entry_id"),
-    inverseJoinColumns = @JoinColumn(name = "tag_id")
-  )
+  @ManyToMany
+  @JoinTable(name = "entry_tag", joinColumns = @JoinColumn(name = "entry_id"), inverseJoinColumns = @JoinColumn(name = "tag_id"))
   private List<Tag> tags = new ArrayList<>();
 
   public Long getId() {

@@ -11,36 +11,36 @@ import jakarta.persistence.Entity;
 @Entity
 public class Category {
 
-    @Id 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    private String title;
+  private String title;
 
-    @OneToMany(mappedBy = "category")
-    private List<Entry> entries;
+  @OneToMany(mappedBy = "category")
+  private List<Entry> entries;
 
-    public Long getId() {
-        return id;
-    }
+  public Long getId() {
+    return id;
+  }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+  public void setId(Long id) {
+    this.id = id;
+  }
 
-    public String getTitle() {
-        return title;
-    }
+  public String getTitle() {
+    return title;
+  }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+  public void setTitle(String title) {
+    this.title = title;
+  }
 
-    public List<Entry> getEntries() {
-        return entries;
-    }
+  public List<Entry> getEntries() {
+    return entries;
+  }
 
-    public void setEntries(List<Entry> entries) {
-        this.entries = entries;
-    }
+  public void setEntries(List<Entry> entries) {
+    this.entries = entries;
+  }
 }

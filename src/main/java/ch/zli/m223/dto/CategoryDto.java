@@ -8,26 +8,26 @@ import jakarta.validation.constraints.NotBlank;
 
 public class CategoryDto {
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    @Schema(readOnly = true)
-    private Long id;
+  @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+  @Schema(readOnly = true)
+  private Long id;
 
-    @NotBlank(message = "Title must not be blank")
-    private String title;
+  @NotBlank(message = "Title must not be blank")
+  private String title;
 
-    public Long getId() {
-        return id;
-    }
+  public Long getId() {
+    return id;
+  }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+  public void setId(Long id) {
+    this.id = id;
+  }
 
-    public String getTitle() {
-        return title;
-    }
+  public String getTitle() {
+    return title;
+  }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
+  public void setTitle(String title) {
+    this.title = title;
+  }
 }

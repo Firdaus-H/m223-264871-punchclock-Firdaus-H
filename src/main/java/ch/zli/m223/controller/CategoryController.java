@@ -31,64 +31,61 @@ import ch.zli.m223.mapper.CategoryMapper;
 @Produces(MediaType.APPLICATION_JSON)
 @Tag(name = "Categories", description = "Handling of categories")
 public class CategoryController {
-    
-    @Inject
-    CategoryService categoryService;
 
-    @Inject 
-    CategoryMapper categoryMapper;
+  @Inject
+  CategoryService categoryService;
 
-    @GET
-    @Operation(
-        summary = "Index all Categories.",
-        description = "Returns a list of all categories."
-    )
-    public List<CategoryDto> index() {
-        return categoryService.findAll()
-                .stream()
-                .map(categoryMapper::toDto)
-                .toList();
+  @Inject
+  CategoryMapper categoryMapper;
+
+  @GET
+  @Operation(summary = "Index all Categories.", description = "Returns a list of all categories.")
+  public List<CategoryDto> index() {
+    return categoryService.findAll()
+        .stream()
+        .map(categoryMapper::toDto)
+        .toList();
+  }
+
+  @POST
+  @Operation(summary = "Creates a new category.", description = "Creates a new category and returns the newly added category.")
+  public CategoryDto create(@NotNull @Valid CategoryDto dto) {
+    Category category = categoryMapper.toEntity(dto);
+    Category createdCategory = categoryService.createCategory(category);
+    return categoryMapper.toDto(createdCategory);
+  }
+
+  @DELETE
+  @Path("/{id}")
+  @Operation(summary = "Deletes a category by ID.", description = "Deletes a category by its ID. If the category does not exist, a NotFoundException is thrown.")
+  public void delete(@PathParam("id") Long id) {
+    categoryService.deleteCategory(id);
+  }
+
+  @PUT
+  @Path("/{id}")
+  @Operation(summary = "Updates a category by ID.", description = "Updates a category by its ID. If the category does not exist, a NotFoundException is thrown.")
+  public CategoryDto update(@PathParam("id") Long id, @NotNull @Valid CategoryDto dto) {
+    Category category = categoryMapper.toEntity(dto);
+    Category updatedCategory = categoryService.updateCategory(id, category);
+    if (updatedCategory == null) {
+      throw new NotFoundException("Category with ID " + id + " not found.");
     }
+    return categoryMapper.toDto(updatedCategory);
+  }
 
-    @POST
-    @Operation(summary = "Creates a new category.", description = "Creates a new category and returns the newly added category.")
-    public CategoryDto create(@NotNull @Valid CategoryDto dto) {
-        Category category = categoryMapper.toEntity(dto);
-        Category createdCategory = categoryService.createCategory(category);
-        return categoryMapper.toDto(createdCategory);
+  @PATCH
+  @Path("/{id}")
+  @Operation(summary = "Patches a category by ID.", description = "Patches a category by its ID. If the category does not exist, a NotFoundException is thrown.")
+  public CategoryDto patch(@PathParam("id") Long id, @NotNull CategoryDto dto) {
+
+    Category category = categoryMapper.toEntity(dto);
+    Category patchedCategory = categoryService.patchCategory(id, category);
+
+    if (patchedCategory == null) {
+      throw new NotFoundException("Category with ID " + id + " not found.");
     }
-
-    @DELETE
-    @Path("/{id}")
-    @Operation(summary = "Deletes a category by ID.", description = "Deletes a category by its ID. If the category does not exist, a NotFoundException is thrown.")
-    public void delete(@PathParam("id") Long id) {
-        categoryService.deleteCategory(id);
-    }
-
-    @PUT
-    @Path("/{id}")
-    @Operation(summary = "Updates a category by ID.", description = "Updates a category by its ID. If the category does not exist, a NotFoundException is thrown.")
-    public CategoryDto update(@PathParam("id") Long id, @NotNull @Valid CategoryDto dto) {
-        Category category = categoryMapper.toEntity(dto);
-        Category updatedCategory = categoryService.updateCategory(id, category);
-        if (updatedCategory == null) {
-            throw new NotFoundException("Category with ID " + id + " not found.");
-        }
-        return categoryMapper.toDto(updatedCategory);
-    }
-
-    @PATCH
-    @Path("/{id}")
-    @Operation(summary = "Patches a category by ID.", description = "Patches a category by its ID. If the category does not exist, a NotFoundException is thrown.")
-    public CategoryDto patch(@PathParam("id") Long id, @NotNull CategoryDto dto) {
-
-        Category category = categoryMapper.toEntity(dto);
-        Category patchedCategory = categoryService.patchCategory(id, category);
-        
-        if (patchedCategory == null) {
-            throw new NotFoundException("Category with ID " + id + " not found.");
-        }
-        return categoryMapper.toDto(patchedCategory);
-    }
+    return categoryMapper.toDto(patchedCategory);
+  }
 
 }

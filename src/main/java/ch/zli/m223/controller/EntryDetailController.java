@@ -24,43 +24,36 @@ import ch.zli.m223.service.EntryService;
 @Tag(name = "Entry Details", description = "Detailed representation of entries")
 public class EntryDetailController {
 
-    @Inject
-    EntryService entryService;
+  @Inject
+  EntryService entryService;
 
-    @Inject
-    EntryMapper entryMapper;
+  @Inject
+  EntryMapper entryMapper;
 
-    @GET
-    @Transactional 
-    @Operation(
-        summary = "Returns all entry details.",
-        description = "Returns all entries with their Category and Tags."
-    )
-    public List<EntryDetailDto> index() {
+  @GET
+  @Transactional
+  @Operation(summary = "Returns all entry details.", description = "Returns all entries with their Category and Tags.")
+  public List<EntryDetailDto> index() {
 
-        return entryService.findAll()
-                .stream()
-                .map(entryMapper::toDetailDto)
-                .toList();
+    return entryService.findAll()
+        .stream()
+        .map(entryMapper::toDetailDto)
+        .toList();
+  }
+
+  @GET
+  @Transactional
+  @Path("/{id}")
+  @Operation(summary = "Returns entry details by ID.", description = "Returns an entry with its Category and Tags.")
+  public EntryDetailDto show(@PathParam("id") Long id) {
+
+    Entry entry = entryService.findById(id);
+
+    if (entry == null) {
+      throw new NotFoundException(
+          "Entry with ID " + id + " not found.");
     }
 
-    @GET
-    @Transactional 
-    @Path("/{id}")
-    @Operation(
-        summary = "Returns entry details by ID.",
-        description = "Returns an entry with its Category and Tags."
-    )
-    public EntryDetailDto show(@PathParam("id") Long id) {
-
-        Entry entry = entryService.findById(id);
-
-        if (entry == null) {
-            throw new NotFoundException(
-                "Entry with ID " + id + " not found."
-            );
-        }
-
-        return entryMapper.toDetailDto(entry);
-    }
+    return entryMapper.toDetailDto(entry);
+  }
 }

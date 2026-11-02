@@ -14,81 +14,76 @@ import jakarta.ws.rs.NotFoundException;
 @ApplicationScoped
 public class TagService {
 
-    @Inject
-    TagRepository tagRepository;
+  @Inject
+  TagRepository tagRepository;
 
-    @Transactional
-    public Tag createTag(Tag tag) {
-        tagRepository.persist(tag);
-        return tag;
+  @Transactional
+  public Tag createTag(Tag tag) {
+    tagRepository.persist(tag);
+    return tag;
+  }
+
+  public List<Tag> findAll() {
+    return tagRepository.listAll();
+  }
+
+  public Tag findById(Long id) {
+    return tagRepository.findById(id);
+  }
+
+  @Transactional
+  public Tag updateTag(Long id, Tag updatedTag) {
+
+    Tag existingTag = tagRepository.findById(id);
+
+    if (existingTag == null) {
+      throw new NotFoundException(
+          "Tag with ID " + id + " not found.");
     }
 
-    public List<Tag> findAll() {
-        return tagRepository.listAll();
+    if (updatedTag.getTitle() == null || updatedTag.getTitle().isBlank()) {
+      throw new BadRequestException(
+          "Tag title must not be blank.");
     }
 
-    public Tag findById(Long id) {
-        return tagRepository.findById(id);
+    existingTag.setTitle(updatedTag.getTitle());
+
+    return existingTag;
+  }
+
+  @Transactional
+  public Tag patchTag(Long id, Tag updatedTag) {
+
+    Tag existingTag = tagRepository.findById(id);
+
+    if (existingTag == null) {
+      throw new NotFoundException(
+          "Tag with ID " + id + " not found.");
     }
 
-    @Transactional
-    public Tag updateTag(Long id, Tag updatedTag) {
+    if (updatedTag.getTitle() != null) {
 
-        Tag existingTag = tagRepository.findById(id);
+      if (updatedTag.getTitle().isBlank()) {
+        throw new BadRequestException(
+            "Tag title must not be blank.");
+      }
 
-        if (existingTag == null) {
-            throw new NotFoundException(
-                "Tag with ID " + id + " not found."
-            );
-        }
-        
-        if (updatedTag.getTitle() == null || updatedTag.getTitle().isBlank()) {
-            throw new BadRequestException(
-                "Tag title must not be blank."
-            );
-        }
-
-        existingTag.setTitle(updatedTag.getTitle());
-
-        return existingTag;
+      existingTag.setTitle(updatedTag.getTitle());
     }
 
-    @Transactional
-    public Tag patchTag(Long id, Tag updatedTag) {
+    return existingTag;
+  }
 
-        Tag existingTag = tagRepository.findById(id);
+  @Transactional
+  public void deleteTag(Long id) {
 
-        if (existingTag == null) {
-            throw new NotFoundException(
-                "Tag with ID " + id + " not found."
-            );
-        }
+    Tag tag = tagRepository.findById(id);
 
-        if (updatedTag.getTitle() != null) {
-
-            if (updatedTag.getTitle().isBlank()) {
-                throw new BadRequestException(
-                    "Tag title must not be blank."
-                );
-            }
-
-            existingTag.setTitle(updatedTag.getTitle());
-        }
-
-        return existingTag;
+    if (tag == null) {
+      throw new NotFoundException(
+          "Tag with ID " + id + " not found.");
     }
 
-    @Transactional
-    public void deleteTag(Long id) {
-
-        Tag tag = tagRepository.findById(id);
-
-        if (tag == null) {
-            throw new NotFoundException(
-                "Tag with ID " + id + " not found."
-            );
-        }
-
-        tagRepository.delete(tag);
-    }
+    tagRepository.delete(tag);
+  }
 }

@@ -10,54 +10,56 @@ import jakarta.ws.rs.NotFoundException;
 import ch.zli.m223.model.Category;
 import ch.zli.m223.repository.CategoryRepository;
 
-@ApplicationScoped 
+@ApplicationScoped
 public class CategoryService {
-    @Inject CategoryRepository categoryRepository;
 
-    @Transactional 
-    public Category createCategory(Category category) {
-        categoryRepository.persist(category);
-        return category;
-    }
+  @Inject
+  CategoryRepository categoryRepository;
 
-    public List<Category> findAll() {
-        return categoryRepository.listAll();
-    }
+  @Transactional
+  public Category createCategory(Category category) {
+    categoryRepository.persist(category);
+    return category;
+  }
 
-    @Transactional
-    public void deleteCategory(Long id) {
-        Category category = categoryRepository.findById(id);
-        if (category == null) {
-            throw new NotFoundException("Category with ID " + id + " not found.");
-        }
-        categoryRepository.delete(category);
-    }
-    
-    public Category findById(Long id) {
-        return categoryRepository.findById(id);
-    }
+  public List<Category> findAll() {
+    return categoryRepository.listAll();
+  }
 
-    @Transactional
-    public Category updateCategory(Long id, Category updatedCategory) {
-        Category existingCategory = categoryRepository.findById(id);
-        if (existingCategory != null) {
-            existingCategory.setTitle(updatedCategory.getTitle());
-        }
-        return existingCategory;
+  @Transactional
+  public void deleteCategory(Long id) {
+    Category category = categoryRepository.findById(id);
+    if (category == null) {
+      throw new NotFoundException("Category with ID " + id + " not found.");
     }
+    categoryRepository.delete(category);
+  }
 
-    @Transactional
-    public Category patchCategory(Long id, Category updatedCategory) {
-        Category existingCategory = categoryRepository.findById(id);
-        if (existingCategory == null) {
-            return null;
-        }
-        if (updatedCategory.getTitle() != null) {
-            if (updatedCategory.getTitle().isEmpty()) {
-                throw new BadRequestException("Title must not be blank.");
-            }
-            existingCategory.setTitle(updatedCategory.getTitle());
-        }
-        return existingCategory;
+  public Category findById(Long id) {
+    return categoryRepository.findById(id);
+  }
+
+  @Transactional
+  public Category updateCategory(Long id, Category updatedCategory) {
+    Category existingCategory = categoryRepository.findById(id);
+    if (existingCategory != null) {
+      existingCategory.setTitle(updatedCategory.getTitle());
     }
+    return existingCategory;
+  }
+
+  @Transactional
+  public Category patchCategory(Long id, Category updatedCategory) {
+    Category existingCategory = categoryRepository.findById(id);
+    if (existingCategory == null) {
+      return null;
+    }
+    if (updatedCategory.getTitle() != null) {
+      if (updatedCategory.getTitle().isEmpty()) {
+        throw new BadRequestException("Title must not be blank.");
+      }
+      existingCategory.setTitle(updatedCategory.getTitle());
+    }
+    return existingCategory;
+  }
 }
