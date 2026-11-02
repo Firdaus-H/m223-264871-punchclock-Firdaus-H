@@ -17,6 +17,7 @@ import ch.zli.m223.model.Category;
 import ch.zli.m223.model.Tag;
 import ch.zli.m223.repository.CategoryRepository;
 import ch.zli.m223.repository.TagRepository;
+import ch.zli.m223.dto.TimeSummary;
 
 @ApplicationScoped
 public class EntryService {
@@ -29,6 +30,9 @@ public class EntryService {
 
   @Inject
   private TagRepository tagRepository;
+
+  @Inject
+  TimeSummaryService timeSummaryService;
 
   @Transactional
   public Entry createEntry(Entry entry, EntryDto dto) {
@@ -142,5 +146,12 @@ public class EntryService {
     }
 
     entry.setTags(tags);
+  }
+
+  public List<TimeSummary> getTimeSummaries() {
+
+    List<Entry> entries = entryRepository.listAll();
+
+    return timeSummaryService.calculateSummaryPerDay(entries);
   }
 }
