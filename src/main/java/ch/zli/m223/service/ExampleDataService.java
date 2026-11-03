@@ -54,9 +54,23 @@ public class ExampleDataService {
   @Transactional
   public void createExampleData() {
 
-    if (categoryRepository.count() > 0 ||
-        tagRepository.count() > 0 ||
-        entryRepository.count() > 0) {
+    if (applicationUserRepository.findByUsername("testuser") == null) {
+
+      ApplicationUser user = new ApplicationUser();
+
+      user.setUsername("testuser");
+
+      user.setPasswordHash(
+          BcryptUtil.bcryptHash("test123"));
+
+      user.setRole("User");
+
+      applicationUserRepository.persist(user);
+    }
+
+    if (categoryRepository.count() > 0 || tagRepository.count() > 0 || entryRepository.count() > 0)
+
+    {
 
       return;
     }
@@ -127,18 +141,5 @@ public class ExampleDataService {
     entryRepository.persist(entry4);
     entryRepository.persist(entry5);
 
-    if (applicationUserRepository.findByUsername("testuser") == null) {
-
-      ApplicationUser user = new ApplicationUser();
-
-      user.setUsername("testuser");
-
-      user.setPasswordHash(
-          BcryptUtil.bcryptHash("test123"));
-
-      user.setRole("User");
-
-      applicationUserRepository.persist(user);
-    }
   }
 }
