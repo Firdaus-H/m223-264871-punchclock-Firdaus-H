@@ -9,7 +9,6 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.NotFoundException;
-import jakarta.ws.rs.NotFoundException;
 
 import ch.zli.m223.model.Entry;
 import ch.zli.m223.dto.EntryDto;
