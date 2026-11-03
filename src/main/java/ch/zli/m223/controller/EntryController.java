@@ -15,11 +15,14 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.SecurityContext;
 
 import jakarta.validation.constraints.NotNull;
 
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import ch.zli.m223.dto.EntryDto;
 import ch.zli.m223.model.Entry;
@@ -38,6 +41,9 @@ public class EntryController {
   @Inject
   EntryMapper entryMapper;
 
+  @Inject
+  JsonWebToken jwt;
+
   @GET
   @Operation(summary = "Index all Entries.", description = "Returns a list of all entries.")
   public List<EntryDto> index() {
@@ -48,10 +54,21 @@ public class EntryController {
   }
 
   @POST
-  @Operation(summary = "Creates a new entry.", description = "Creates a new entry and returns the newly added entry.")
-  public EntryDto create(@NotNull @Valid EntryDto dto) {
+  @Operation(summary = "Creates a new entry.", description = "Creates an entry and associates it with the authenticated user.")
+  public EntryDto create(
+      @NotNull @Valid EntryDto dto,
+      @Context SecurityContext securityContext) {
+
     Entry entry = entryMapper.toEntity(dto);
-    Entry createdEntry = entryService.createEntry(entry, dto);
+
+    Long userId = null;
+
+    if (securityContext.getUserPrincipal() != null) {
+      userId = Long.valueOf(jwt.getSubject());
+    }
+
+    Entry createdEntry = entryService.createEntry(entry, dto, userId);
+
     return entryMapper.toDto(createdEntry);
   }
 

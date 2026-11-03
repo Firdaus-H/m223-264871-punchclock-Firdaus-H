@@ -13,6 +13,10 @@ import ch.zli.m223.repository.CategoryRepository;
 import ch.zli.m223.repository.EntryRepository;
 import ch.zli.m223.repository.TagRepository;
 
+import ch.zli.m223.model.ApplicationUser;
+import ch.zli.m223.repository.ApplicationUserRepository;
+
+import io.quarkus.elytron.security.common.BcryptUtil;
 import io.quarkus.runtime.StartupEvent;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -32,6 +36,9 @@ public class ExampleDataService {
   @Inject
   EntryRepository entryRepository;
 
+  @Inject
+  ApplicationUserRepository applicationUserRepository;
+
   @ConfigProperty(name = "punchclock.example-data.enabled", defaultValue = "false")
   boolean exampleDataEnabled;
 
@@ -47,9 +54,23 @@ public class ExampleDataService {
   @Transactional
   public void createExampleData() {
 
-    if (categoryRepository.count() > 0 ||
-        tagRepository.count() > 0 ||
-        entryRepository.count() > 0) {
+    if (applicationUserRepository.findByUsername("testuser") == null) {
+
+      ApplicationUser user = new ApplicationUser();
+
+      user.setUsername("testuser");
+
+      user.setPasswordHash(
+          BcryptUtil.bcryptHash("test123"));
+
+      user.setRole("User");
+
+      applicationUserRepository.persist(user);
+    }
+
+    if (categoryRepository.count() > 0 || tagRepository.count() > 0 || entryRepository.count() > 0)
+
+    {
 
       return;
     }
@@ -119,5 +140,6 @@ public class ExampleDataService {
     entryRepository.persist(entry3);
     entryRepository.persist(entry4);
     entryRepository.persist(entry5);
+
   }
 }

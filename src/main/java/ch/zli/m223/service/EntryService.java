@@ -18,6 +18,8 @@ import ch.zli.m223.model.Tag;
 import ch.zli.m223.repository.CategoryRepository;
 import ch.zli.m223.repository.TagRepository;
 import ch.zli.m223.dto.TimeSummary;
+import ch.zli.m223.model.ApplicationUser;
+import ch.zli.m223.repository.ApplicationUserRepository;
 
 @ApplicationScoped
 public class EntryService {
@@ -34,10 +36,31 @@ public class EntryService {
   @Inject
   TimeSummaryService timeSummaryService;
 
+  @Inject
+  ApplicationUserRepository applicationUserRepository;
+
   @Transactional
-  public Entry createEntry(Entry entry, EntryDto dto) {
+  public Entry createEntry(
+      Entry entry,
+      EntryDto dto,
+      Long userId) {
+
     assignRelationships(entry, dto);
+
+    if (userId != null) {
+
+      ApplicationUser user = applicationUserRepository.findById(userId);
+
+      if (user == null) {
+        throw new NotFoundException(
+            "ApplicationUser with ID " + userId + " not found.");
+      }
+
+      entry.setUser(user);
+    }
+
     entryRepository.persist(entry);
+
     return entry;
   }
 
